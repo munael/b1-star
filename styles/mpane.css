@@ -1,0 +1,30 @@
+#mpane {
+    display: none;
+    flex: 1 3 20%;
+    min-width: 200px;
+    background-color: green;
+}
+
+/* UI Elements */
+
+button {
+    padding: 4pt 8pt;
+    margin: 0 auto;
+    float: left;
+
+    font-size: 16pt;
+    color: white;
+
+    border: 1px solid whitesmoke;
+    background-color: gray;
+
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: hsl(0, 0%, 60%);
+}
+
+button:active {
+    box-shadow: inset 0px 0px 4px 2px white;    
+}
