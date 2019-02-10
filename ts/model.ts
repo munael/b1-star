@@ -6,11 +6,15 @@ type Model = {
     lo: Layout
     cbob: CBob
     hist: Hist
-    ui: Ui
+    ui: AppChromeModel
 }
 
 type Layout = {
     bobs: Bob[]
+}
+
+enum BobOrientation {
+    North, South, East, West
 }
 
 type Bob = {
@@ -19,9 +23,9 @@ type Bob = {
     dimx: number
     dimy: number
 
-    orientation: number
+    orientation: BobOrientation
 
     color: Color
-
-    
 }
+
+

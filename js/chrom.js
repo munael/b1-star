@@ -1,9 +1,4 @@
 class AppChromeModel {
-    config: {
-        app: any,
-        mpane: any
-    }
-
     init() {
         let pstyle = 'border: 1px solid #dfdfdf; padding: 5px;';
         let app = {
@@ -25,7 +20,7 @@ class AppChromeModel {
                 { id: 'tab2', caption: 'Initial Tab' },
             ],
             onClick: function (event) {
-                w2ui['layout'].html('main', 'Active tab: '+ event.target);
+                w2ui['layout'].html('main', 'Active tab: ' + event.target);
             },
             onClose: function (event) {
                 this.click('tab0');
@@ -36,7 +31,6 @@ class AppChromeModel {
             mpane: mpane
         };
     }
-
-    constructor() { this.init() }
+    constructor() { this.init(); }
 }
-
+//# sourceMappingURL=chrom.js.map

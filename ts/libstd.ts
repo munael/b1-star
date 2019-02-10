@@ -3,20 +3,21 @@ export {
 }
 
 namespace std {
-    export class Vec {
-        p: number[]
+    export class Vec<T extends number> {
+        p: T[]
 
-        constructor(l: number) {
-            this.p = new Array<number>(l)
+        constructor(...items: T[]);
+        constructor(len: number);
+
+        constructor(...args: any[]) {
+            this.p = new Array<T>(...args);
         }
 
-        g = this.get
-        get(i: number): number {
+        get(i: number): T {
             return this.p[i]
         }
 
-        s = this.set
-        set(i: number, v: number): number {
+        set(i: number, v: T): T {
             let r = this.p[i]
             this.p[i] = v
             return r

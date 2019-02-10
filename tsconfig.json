@@ -7,11 +7,12 @@
         "esModuleInterop": true,
         "outDir": "js",
         "sourceMap": true,
-        "noImplicitThis": true,
         "typeRoots": [
             "../types",
             "./node_modules/@types"
-        ]
+        ],
+        "noImplicitThis": true,
+        "strictNullChecks": true
     },
     "include": [
         "types/",

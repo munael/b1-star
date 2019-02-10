@@ -5,45 +5,56 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>B1* 0.4</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="main.css">
+
+    <!-- Styles -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css" integrity="sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" media="screen" href="main.css">
+
+    <!-- Data Binding -->
+    <!-- <script defer src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script> -->
 
     <!-- Utility -->
-    <!-- <script defer src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script> -->
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js" defer></script>
+    <script defer src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <!-- <script defer src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script> -->
-
     
-    <!-- Specific -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.1/p5.min.js" defer></script>
+    <!-- Animation -->
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.1/p5.min.js"></script>
     <!-- <script defer src="http://d3js.org/d3.v3.min.js"></script> -->
+
+    <!-- UI -->
+    <script defer type="text/javascript" src="http://rawgit.com/vitmalina/w2ui/master/dist/w2ui.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="http://rawgit.com/vitmalina/w2ui/master/dist/w2ui.min.css" />
 
 </head>
 
 <body>
-    <header class='head banner'><i class='logo'>B1*</i><span class='head bar btn-group'>
-        <button class='upload' title='Open Schematic from Local Drive'><i class='fas fa-file-import'></i></button>
-        <button class='download' title='Save Schematic to Local Drive'><i class='fas fa-file-download'></i></button>
-        <button class='dgraph' title='Switch to {{graph_view.next_view}}'><i class='fas fa-share-alt'></i></button>
-        <button class='snapshot' title='Commit current changes to snapshot and create new leaf node in the Timeline Graph'><i class='fas fa-camera'></i></button>
-    </span></header>
-
-    <div class='main app' id='app'>
-        <div id='ed' class='ed p5 pane'></div>
-        <div id='mpane' class='magic pane'></div>
+    <header class='head banner'><i class='logo'>B1*</i>
+        <span class='head bar btn-group'>
+            <button class='upload' title='Open Schematic from Local Drive'><i class='fas fa-file-import'></i></button>
+            <button class='download' title='Save Schematic to Local Drive'><i class='fas fa-file-download'></i></button>
+            <button class='dgraph' title='Switch to {{graph_view.next_view}}'><i class='fas fa-share-alt'></i></button>
+            <button class='snapshot' title='Commit current changes to snapshot and create new leaf node in the Timeline Graph'><i class='fas fa-camera'></i></button>
+        </span>
+    </header>
+    
+    <div id='app' class='main app'>
+        <div id='ed' class='ed p5 pane'>foo</div>
+        <div id='mpane' class='magic pane'>bar</div>
     </div>
 
-    <footer class='banner status'>Made at the American University in Cairo, 2018 <i>Departments of AENG and CSE</i></footer>
-
+    <footer class='banner status'>Made at the American University in Cairo, 2018/2019 <i>Departments of AENG and CSE</i></footer>
+    
     <!--  -->
     <!--  -->
     <!--  -->
     <!--  -->
+    
     <!-- Late Scripts -->
+    <script defer src='./js/w2ui-1.5.rc1.min.js'></script>
     <script defer src='./js/model.js'></script>
     <script defer src='./js/chrom.js'></script>
+    <script defer src='./js/dgraph.js'></script>
     <script defer src='./js/ed.js'></script>
-    <script defer src='./js/tg.js'></script>
     <script type='module' src='./js/libstd.js'></script>
     <script type='module' src='./js/app.js'></script>
 
