@@ -29,16 +29,17 @@
 
 <body>
     <header class='head banner'><i class='logo'>B1*</i>
-        <span class='head bar btn-group'>
+        <!-- <span class='head bar btn-group'>
             <button class='upload' title='Open Schematic from Local Drive'><i class='fas fa-file-import'></i></button>
             <button class='download' title='Save Schematic to Local Drive'><i class='fas fa-file-download'></i></button>
             <button class='dgraph' title='Switch to {{graph_view.next_view}}'><i class='fas fa-share-alt'></i></button>
             <button class='snapshot' title='Commit current changes to snapshot and create new leaf node in the Timeline Graph'><i class='fas fa-camera'></i></button>
-        </span>
+        </span> -->
     </header>
     
     <div id='app' class='main app'>
-        <div id='ed' class='ed p5 pane'>foo</div>
+        <div id='nav-bar' class='nav bar'>nav-bar</div>
+        <div id='ed' class='ed p5 pane'></div>
         <div id='mpane' class='magic pane'>bar</div>
     </div>
 
@@ -50,13 +51,14 @@
     <!--  -->
     
     <!-- Late Scripts -->
-    <script defer src='./js/w2ui-1.5.rc1.min.js'></script>
-    <script defer src='./js/model.js'></script>
-    <script defer src='./js/chrom.js'></script>
-    <script defer src='./js/dgraph.js'></script>
-    <script defer src='./js/ed.js'></script>
-    <script type='module' src='./js/libstd.js'></script>
-    <script type='module' src='./js/app.js'></script>
+    <!-- <script defer src='./js/w2ui-1.5.rc1.min.js'></script> -->
+    <script type='module' defer src='./js/libstd.js'></script>
+    <script type='module' defer src='./js/model.js'></script>
+    <script type='module' defer src='./js/chrom.js'></script>
+    <script type='module' defer src='./js/dgraph.js'></script>
+    <script type='module' defer src='./js/ed.js'></script>
+    <script type='module' defer src='./js/app.js'></script>
 
 </body>
+<input hidden type="file" id="file-uploader" name="files[]" />
 </html>

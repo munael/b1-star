@@ -1,4 +1,4 @@
-@import "./styles/mpane.css";
+/* @import "./styles/mpane.css"; */
 
 /* Main Body Layout */
 
@@ -71,7 +71,7 @@ body * {
 }
 
 .head.banner * {
-    font-size: 20pt;
+    font-size: 14pt;
     /* margin: auto */
 }
 

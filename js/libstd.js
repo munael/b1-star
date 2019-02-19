@@ -1,4 +1,12 @@
 export { std };
+export class Ref {
+    constructor(val) {
+        this.val = val;
+    }
+}
+export function ref(val) {
+    return new Ref(val);
+}
 var std;
 (function (std) {
     class Vec {
@@ -18,6 +26,19 @@ var std;
         }
     }
     std.Vec = Vec;
+    function kvmap(map, func) {
+        let r = {};
+        for (let key in map) {
+            let [k, v] = func(key, map[key]);
+            r[k] = v;
+        }
+        return r;
+    }
+    std.kvmap = kvmap;
+    function apply(f, ...a) {
+        return f(...a);
+    }
+    std.apply = apply;
 })(std || (std = {}));
 export var ps;
 (function (ps) {
