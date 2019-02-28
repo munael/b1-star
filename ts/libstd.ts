@@ -13,6 +13,12 @@ export function ref<T>(val: T): Ref<T> {
 }
 
 namespace std {
+    namespace $$ {
+        export type Prop = string | symbol | number;
+        export type Accessor = { get: (self: any, prop: Prop) => any };
+
+        export let delegate_cache: Map<Prop, Accessor> = new Map();
+    }
     export class Vec<T extends number> {
         p: T[]
 
@@ -36,6 +42,17 @@ namespace std {
         get len(): number {
             return this.p.length
         }
+    }
+
+    export function delegate<T extends {}, K extends keyof T>(obj: T, sub: K): T & T[K] {
+        let accessor = $$.delegate_cache.get(sub) || {
+            get(self: any, prop: $$.Prop) {
+                if (prop in self) return self[prop]
+                return self[sub][prop]
+            }
+        };
+        $$.delegate_cache.set(sub, accessor);
+        return new Proxy(obj, accessor);
     }
 
     export interface FileReaderEventTarget extends EventTarget {

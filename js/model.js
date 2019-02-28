@@ -2,73 +2,78 @@ import { std } from "./libstd.js";
 export class Model {
     constructor(ver) {
         this.version = ver;
-        this.bobs = [];
-        this.hist = [];
-        this.cbob = null;
-        this.callbacks = new Radio();
-        console.log('Model!');
+        this.tree = new DTree();
+    }
+    get bobs() {
+        return this.tree.active;
+    }
+    hist_json() {
+        return JSON.stringify(this.tree.root);
+    }
+    from_json(json) {
+        this.tree = new DTree();
+        this.tree.root = json;
     }
 }
-class Radio {
+export class DTree {
     constructor() {
-        this.get = (name) => this.list[name];
-        this.gets = (name) => {
-            return name in this.list
-                ? this.list[name]
-                : () => {
-                    console.log(`WARN - No callback for ${name} in this RadioStation.`);
-                };
+        this.root = {
+            self: [
+                newBob({
+                    dimx: 200,
+                    dimy: 200,
+                    posx: 0,
+                    posy: 0,
+                    rota: 90,
+                    id: 'Foo',
+                    color: 'red'
+                })
+            ],
+            ahead: [],
         };
-        this.on = (name, cb) => {
-            this.list[name] = cb;
-        };
-        this.list = {};
-        console.log('Radio!');
+        this.path = [];
+        this.current = this.root;
+    }
+    walk(path) {
+        let root_ = this.root;
+        for (let i of path) {
+            if (0 <= i && i < root_.ahead.length)
+                root_ = root_.ahead[i];
+            else
+                throw `Bad path: ${path.join('.')}`;
+        }
+        ;
+        return root_.self;
+    }
+    add(snap) {
+        this.root.ahead.push({
+            self: snap,
+            ahead: [],
+        });
+    }
+    fork() {
+        let bobs = $.extend(true, {}, { self: this.current.self });
+        let next = { self: bobs.self, ahead: [] };
+        this.path.push(this.current.ahead.length);
+        this.current.ahead.push(next);
+        this.current = next;
+    }
+    get active() {
+        return this.walk(this.path);
     }
 }
-var BobOrient;
-(function (BobOrient) {
-    BobOrient[BobOrient["North"] = 0] = "North";
-    BobOrient[BobOrient["South"] = 1] = "South";
-    BobOrient[BobOrient["East"] = 2] = "East";
-    BobOrient[BobOrient["West"] = 3] = "West";
-})(BobOrient || (BobOrient = {}));
-export class Bob {
-    constructor(id, posx, posy, dimx, dimy, orient, color) {
-        this.id = id;
-        this.posx = posx;
-        this.posy = posy;
-        this.dimx = dimx;
-        this.dimy = dimy;
-        this.orient = orient;
-        this.color = color;
+export class BobImpl {
+    constructor(data) {
+        this._data = data;
     }
-    get rota() {
-        return this.orient == BobOrient.East
-            ? 0
-            : this.orient == BobOrient.North
-                ? 90
-                : this.orient == BobOrient.West
-                    ? 180
-                    : 270;
+    dict() {
+        return std.kvmap(this._data, (k, v) => [k, v.toString()]);
+    }
+    static new(data) {
+        let bf = new BobImpl(data);
+        let bob = std.delegate(bf, '_data');
+        return bob;
     }
 }
-(function (Bob) {
-    function make() {
-        return {
-            id: '',
-            posx: 0,
-            posy: 0,
-            dimx: 0,
-            dimy: 0,
-            rota: 0,
-            color: new p5.Color()
-        };
-    }
-    Bob.make = make;
-    function dict(bob) {
-        return std.kvmap(bob, (k, v) => [k, v.toString()]);
-    }
-    Bob.dict = dict;
-})(Bob || (Bob = {}));
+export const newBob = BobImpl.new;
 //# sourceMappingURL=model.js.map

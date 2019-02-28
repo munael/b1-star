@@ -1,105 +1,128 @@
-import { std, Ref } from "./libstd.js";
+import { std } from "./libstd.js";
 import { AppChromeModel } from "./chrom.js"
 
-type Color = p5.Color
+type Color = string
 
 export class Model {
     version: string
-    bobs: Bob[]
-    cbob: CBob | null
-    hist: string[]
-
-    tree: DGraph
+    
+    tree: DTree
 
     ui: AppChromeModel
     ed: p5
 
-    callbacks: Radio
-
     constructor(ver: string) {
         this.version = ver;
-        this.bobs = [];
-        this.hist = [];
-        this.cbob = null;
+        this.tree = new DTree();
+    }
 
-        this.callbacks = new Radio();
+    get bobs() {
+        return this.tree.active;
+    }
 
-        console.log('Model!')
+    hist_json() {
+        return JSON.stringify(this.tree.root);
+    }
+
+    from_json(json: _Node) {
+        this.tree = new DTree();
+        this.tree.root = json;
     }
 }
 
-export type DGraph = {
-    state: Bob[]
-    children: DGraph[] | null
+type _Node = {
+    self: Bob[];
+    ahead: _Node[];
+    // behind: _Node | null;
 }
 
-class Radio {
-    list: { [name: string]: Function }
+export class DTree {
+    root: _Node;
+    path: number[];
+    current: _Node;
 
     constructor() {
-        this.list = {};
-        console.log('Radio!');
-    }
-
-    get = (name: string): Function => this.list[name];
-
-    gets = (name: string): Function => {
-        return name in this.list
-            ? this.list[name]
-            : () => {
-                console.log(`WARN - No callback for ${name} in this RadioStation.`)
-            }
-    }
-
-    on = (name: string, cb: Function) => {
-        this.list[name] = cb;
-    }
-}
-
-enum BobOrient {
-    North, South, East, West
-}
-
-export class Bob {
-    constructor (
-        public id: string,
-        public posx: number,
-        public posy: number,
-        public dimx: number,
-        public dimy: number,
-        public orient: BobOrient,
-        public color: Color,
-    ) {
-    }
-
-    public get rota() {
-        return this.orient == BobOrient.East
-                ? 0
-                : this.orient == BobOrient.North
-                ? 90
-                : this.orient == BobOrient.West
-                ? 180
-                : 270;
-    }
-}
-
-type CBob = Ref<Bob>
-
-export namespace Bob {
-    export function make(): Bob {
-        return <Bob> {
-            id: '',
-            posx: 0,
-            posy: 0,
-            dimx: 0,
-            dimy: 0,
-            rota: 0,
-            color: new p5.Color()
+        this.root = {
+            self: [
+                newBob({
+                    dimx: 200,
+                    dimy: 200,
+                    posx: 0,
+                    posy: 0,
+                    rota: 90,
+                    id: 'Foo',
+                    color: 'red'
+                })
+            ],
+            ahead: [],
+            // behind: null,
         }
+        this.path = []
+        this.current = this.root;
     }
-    export function dict(bob: Bob): {[s: string]: string} {
-        return std.kvmap(bob,
+
+    walk(path: number[]) {
+        let root_ = this.root;
+        for(let i of path) {
+            if(0 <= i && i < root_.ahead.length)
+                root_ = root_.ahead[i];
+            else
+                throw `Bad path: ${path.join('.')}`;
+        };
+        return root_.self;
+    }
+
+    private add(snap: Bob[]) {
+        this.root.ahead.push({
+            self: snap,
+            ahead: [],
+            // behind: null,
+        })
+    }
+
+    fork() {
+        let bobs = $.extend(true, {}, { self: this.current.self });
+        let next = { self: bobs.self, ahead: [] };
+        this.path.push(this.current.ahead.length);
+        this.current.ahead.push(next);
+        this.current = next;
+    }
+
+    get active() {
+        return this.walk(this.path);
+    }
+}
+
+type BobData = {
+    id: string;
+    posx: number;
+    posy: number;
+    dimx: number;
+    dimy: number;
+    rota: number;
+    color: Color;
+};
+
+export class BobImpl {
+    _data: BobData;
+
+    private constructor (data: BobData) {
+        this._data = data;
+    }
+    
+    dict(): {[s: string]: string} {
+        return std.kvmap(this._data,
             (k, v) => [k, v.toString()]
         );
     }
+
+    static new(data: BobData) {
+        let bf = new BobImpl(data);
+        let bob = std.delegate(bf, '_data');
+        return bob;
+    }
 }
+
+export const newBob = BobImpl.new;
+
+export type Bob = ReturnType<typeof BobImpl.new>;

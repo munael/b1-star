@@ -1,10 +1,10 @@
 import { std, ref } from "./libstd.js";
 import { Model, Bob } from './model.js';
 
-var store: Model;
+var model: Model;
 
 function snapshot_schematic() {
-    store.hist.push(JSON.stringify(store.bobs.map(Bob.dict)));
+    model.tree.fork();
 }
 
 function upload_schematic(file) {
@@ -13,8 +13,7 @@ function upload_schematic(file) {
     // Closure to capture the file information.
     reader.onload = function(e: std.FileReaderEvent) {
         // Render thumbnail
-        store.hist = JSON.parse(e.target!.result).map(b => JSON.stringify(b));
-        store.bobs = JSON.parse(store.hist[store.hist.length-1]);
+        model.from_json(JSON.parse(e.target!.result));
     };
 
     // Read in the image file as a data URL.
@@ -24,20 +23,10 @@ function upload_schematic(file) {
 /////////////////////
 
 function $begin() {
-    $('#bob-add').click(function() {
-        store.bobs.push(Bob.make());
-        store.cbob = ref(store.bobs[store.bobs.length-1]);
-    });
-    $('#bobs').change(function() {
-        let k = $('#bobs > option:selected').text();
-        let x = store.bobs.filter((b) => b.id == k);
-        if(x.length) store.cbob = ref(x[0]);
-    });
-
     // Nav-bar buttons
-    store.callbacks.on('snapshot-btn-click', snapshot_schematic);
-    store.callbacks.on('download-btn-click', save);
-    store.callbacks.on('upload-btn-click', () => $('#file-uploader').click() );
+    radio.sub('ui.snapshot_btn.click', snapshot_schematic);
+    radio.sub('ui.download_btn.click', save);
+    radio.sub('ui.upload_btn.click', () => $('#file-uploader').click() );
 
     // Hidden upload-file element
     $('#file-uploader').change(function() {
@@ -45,7 +34,7 @@ function $begin() {
     });
 
     console.log('$begin');
-    store.ed = new p5(p5_init);
+    model.ed = new p5(p5_init);
 }
 
 function p5_init(s: p5) {
@@ -71,7 +60,8 @@ function p5_init(s: p5) {
         let h = p.height()! / 2;
         s.background(60, 90, 190);
         s.fill(255, 50);
-        for(let c of store.bobs) {
+        
+        for(let c of model.bobs) {
             let x = w+c.posx/100*w;
             let y = h+c.posy/100*h;
             s.push();
@@ -88,25 +78,26 @@ function p5_init(s: p5) {
         }
     }
 
-    s.windowResized = () => {
-        let p = $('#ed').parent();
-        let w = p.innerWidth()!;
-        let h = p.innerHeight()!;
-        s.resizeCanvas(w, h);
-    }
+    // s.windowResized = () => {
+    //     let p = $('#ed').parent();
+    //     let w = p.innerWidth()!;
+    //     let h = p.innerHeight()!;
+    //     s.resizeCanvas(w, h);
+    // }
 }
 
-export function init(model: Model) {
+export function init(model_: Model) {
     console.log('ed.init!')
-    store = model;
+    model = model_;
     $(document).ready($begin);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
 function save() {
-    download(JSON.stringify(store.hist), 'architecture-schematic.json', 'text/plain');
+    download(model.hist_json(), 'architecture-schematic.json', 'text/plain');
 }
+
 // Function to download data to a file
 function download(data, filename, type) {
     var file = new Blob([data], {type: type});

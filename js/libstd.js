@@ -9,6 +9,10 @@ export function ref(val) {
 }
 var std;
 (function (std) {
+    let $$;
+    (function ($$) {
+        $$.delegate_cache = new Map();
+    })($$ || ($$ = {}));
     class Vec {
         constructor(...args) {
             this.p = new Array(...args);
@@ -26,6 +30,18 @@ var std;
         }
     }
     std.Vec = Vec;
+    function delegate(obj, sub) {
+        let accessor = $$.delegate_cache.get(sub) || {
+            get(self, prop) {
+                if (prop in self)
+                    return self[prop];
+                return self[sub][prop];
+            }
+        };
+        $$.delegate_cache.set(sub, accessor);
+        return new Proxy(obj, accessor);
+    }
+    std.delegate = delegate;
     function kvmap(map, func) {
         let r = {};
         for (let key in map) {

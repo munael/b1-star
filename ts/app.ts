@@ -14,7 +14,7 @@ class W2AppChrome {
     config: AppChromeModel['config']
     
     init() {
-        this.config = store.ui.config;
+        this.config = model.ui.config;
         
         $('#app').w2layout(this.config.app);
         $('#nav-bar').w2toolbar(this.config.nav);
@@ -30,24 +30,24 @@ class W2AppChrome {
     }
 
     constructor(model: Model) {
-        this.store = model;
+        this.model = model;
     }
 
-    store: Model;
+    model: Model;
 }
 
 console.log('In app.ts')
 
-var store: Model = new Model('0.1');
+var model: Model = new Model('0.1');
 
-store.ui = new AppChromeModel(store);
+model.ui = new AppChromeModel(model);
 
-var w2chrome = new W2AppChrome(store);
+var w2chrome = new W2AppChrome(model);
 
 $(() => w2chrome.init());
 
-edInit(store);
+edInit(model);
 
 console.log('Initing ed')
 
-window['store'] = store;
+window['model'] = model;
